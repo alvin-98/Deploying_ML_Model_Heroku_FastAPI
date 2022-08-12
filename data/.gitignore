@@ -1,0 +1,6 @@
+
+/census.csv
+/clean_data.csv
+/X_processed_test.npy
+/X_processed_train.npy
+/y_processed_train.npy
