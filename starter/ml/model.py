@@ -76,7 +76,7 @@ def model_inference(model, X):
     return preds
 
 
-def compute_model_slice_performance(model, cat_features, X):
+def compute_model_slice_performance(model, cat_features, X, encoder, lb):
     """
     Validated the model performance on categorical slices using precision, recall and F1.
 
@@ -103,7 +103,12 @@ def compute_model_slice_performance(model, cat_features, X):
         for cl in unique_cat:
             X_class = X[X[category] == cl]
             X_test, y_test, encoder, lb = process_data(
-                                        X_class, categorical_features=cat_features,training=False
+                                        X_class,
+                                        label='salary',
+                                        categorical_features=cat_features,
+                                        training=False,
+                                        encoder=encoder,
+                                        lb=lb
                                     )
             preds = model.predict(X_test)
             precision, recall, fbeta = compute_model_metrics(y_test, preds)
@@ -111,5 +116,7 @@ def compute_model_slice_performance(model, cat_features, X):
                                         'recall': recall,
                                         'f1': fbeta}
     
-    with open('performance.json', 'w') as fp:
+    with open('model/slice_output.json', 'w') as fp:
         json.dump(performance, fp,  indent=4)
+
+    return performance

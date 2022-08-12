@@ -38,7 +38,7 @@ def clean_data(raw_data, categorical_features=[]):
 
 
 def process_data(
-    X, categorical_features=[], label=None, training=True, encoder=None, lb=None
+    X, categorical_features=[], label=None, training=True, encoder=None, lb=None, save=False
 ):
     """ Process the data used in the machine learning pipeline.
 
@@ -102,7 +102,8 @@ def process_data(
             pass
 
     X = np.concatenate([X_continuous, X_categorical], axis=1)
-    np.save(f"data/X_processed_{'train' if training else 'test'}.npy", X)
-    if training:
-        np.save(f"data/y_processed_train.npy", y)
+    if save:
+        np.save(f"data/X_processed_{'train' if training else 'test'}.npy", X)
+        if training:
+            np.save(f"data/y_processed_train.npy", y)
     return X, y, encoder, lb
