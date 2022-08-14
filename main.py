@@ -4,7 +4,7 @@ from fastapi import FastAPI
 import joblib
 from starter.ml.model import model_inference
 from starter.ml.data import process_data
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Literal
 import numpy as np
 import pandas as pd
@@ -48,14 +48,14 @@ class Person(BaseModel):
                     "Doctorate",
                     "5th-6th",
                     "Preschool"]
-    educationNum: int
+    educationNum: int = Field(None, alias='education-num')
     maritalStatus: Literal["Married-civ-spouse",
                         "Divorced",
                         "Never-married",
                         "Separated",
                         "Widowed",
                         "Married-spouse-absent",
-                        "Married-AF-spouse"]
+                        "Married-AF-spouse"] = Field(None, alias='marital-status')
     occupation: Literal["Tech-support",
                     "Craft-repair",
                     "Other-service",
@@ -82,9 +82,9 @@ class Person(BaseModel):
                 "Other",
                 "Black"]
     sex: Literal["Female", "Male"]
-    capitalGain: int
-    capitalLoss: int
-    hoursPerWeek: int
+    capitalGain: int = Field(None, alias='capital-gain')
+    capitalLoss: int = Field(None, alias='capital-loss')
+    hoursPerWeek: int = Field(None, alias='hours-per-week')
     nativeCountry: Literal["United-States",
                         "Cambodia",
                         "England",
@@ -125,7 +125,26 @@ class Person(BaseModel):
                         "Trinadad&Tobago",
                         "Peru",
                         "Hong",
-                        "Holand-Netherlands"]
+                        "Holand-Netherlands"]  = Field(None, alias='native-country')
+    class Config:
+        schema_extra = {
+            "example": {
+                "age": 30,
+                "workclass": "Private",
+                "fnlwgt": 500,
+                "education": "Bachelors",
+                "education-num": 10,
+                "marital-status": "Divorced",
+                "occupation": "Sales",
+                "relationship": "Unmarried",
+                "race": "White",
+                "sex": "Female",
+                "capital-gain": 500,
+                "capital-loss": 20,
+                "hours-per-week": 50,
+                "native-country": "India",
+            }
+        }
 
 
 # Define a GET on the specified endpoint.
@@ -144,36 +163,36 @@ async def inference(person: Person):
     filename = "model/lb.sav"
     lb = joblib.load(filename)
 
-    input_data = np.array([[person.age,
-                    person.workclass,
-                    person.fnlwgt,
-                    person.education,
-                    person.educationNum,
-                    person.maritalStatus,
-                    person.occupation,
-                    person.relationship,
-                    person.race,
-                    person.sex,
-                    person.capitalGain,
-                    person.capitalLoss,
-                    person.hoursPerWeek,
-                    person.nativeCountry]])
-
-    data = pd.DataFrame(data=input_data, 
-                        columns=["age",
-                        "workclass",
-                        "fnlwgt",
-                        "education",
-                        "education-num",
-                        "marital-status",
-                        "occupation",
-                        "relationship",
-                        "race",
-                        "sex",
-                        "capital-gain",
-                        "capital-loss",
-                        "hours-per-week",
-                        "native-country"])
+    # input_data = np.array([[person.age,
+    #                 person.workclass,
+    #                 person.fnlwgt,
+    #                 person.education,
+    #                 person.educationNum,
+    #                 person.maritalStatus,
+    #                 person.occupation,
+    #                 person.relationship,
+    #                 person.race,
+    #                 person.sex,
+    #                 person.capitalGain,
+    #                 person.capitalLoss,
+    #                 person.hoursPerWeek,
+    #                 person.nativeCountry]])
+    data = pd.DataFrame(person.dict())
+    # data = pd.DataFrame(data=input_data, 
+    #                     columns=["age",
+    #                     "workclass",
+    #                     "fnlwgt",
+    #                     "education",
+    #                     "education-num",
+    #                     "marital-status",
+    #                     "occupation",
+    #                     "relationship",
+    #                     "race",
+    #                     "sex",
+    #                     "capital-gain",
+    #                     "capital-loss",
+    #                     "hours-per-week",
+    #                     "native-country"])
     X, y, _, _ = process_data(
                         data, 
                         categorical_features=[
