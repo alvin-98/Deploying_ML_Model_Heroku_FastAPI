@@ -24,9 +24,9 @@ Model is to be used to predict whether the income of an individual is above or b
 
 ## Metrics
 _Please include the metrics used and your model's performance on those metrics._
-- Precision:
-- Recall:
-- F1 Score:
+- Precision: 0.80
+- Recall: 0.60
+- F1 Score: 0.68
 
 ## Ethical Considerations
 The dataset has race and sex as predictors. This may cause a negative feedback loop and bias the model towards common stereotypes.
