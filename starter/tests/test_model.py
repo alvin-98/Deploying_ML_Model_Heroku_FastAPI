@@ -1,8 +1,10 @@
+from ast import Assert
 import pytest
 import pandas as pd
 import numpy as np
 import joblib
 import logging
+import os
 
 
 logging.basicConfig(
@@ -34,7 +36,21 @@ def test_clean_data(clean_df: pd.DataFrame):
         )
         raise err
 
-    
+
+def test_nan_clean_df(clean_df: pd.DataFrame):
+    """
+    We test whether clean df dataframe has any NaN values
+    """
+    try:
+        assert ~clean_df.isna().any().all()
+        logging.info("Test NaN values in Clean df: SUCCESS")
+    except AssertionError as err:
+        logging.error(
+        "NaN values were found in clean dataframe"
+        )
+        raise err
+
+
 def test_process_data(clean_df: pd.DataFrame):
     """
     We test if the function process_data generates valid outputs
@@ -83,9 +99,25 @@ def test_column_names(clean_df: pd.DataFrame):
         raise err
 
 
-def test_model(clean_df: pd.DataFrame):
+def test_model_training(clean_df: pd.DataFrame):
     """
-    We test whether the train_model produces a trained random forest classifier
+    We test whether the train_model saves a trained random forest classifier in directory
+    """
+    try:
+        filename = "model/rf_model.sav"
+        assert os.path.isfile(filename)
+        logging.info("Testing inference: SUCCESS")
+
+    except AssertionError as err:
+        logging.error(
+        "Testing train_model: The trained model is not saved in directory"
+        )
+        raise err
+
+
+def test_model_inference(clean_df: pd.DataFrame):
+    """
+    We test whether the trained model produces valid predictions
     """
     X_train = np.load('data/X_processed_train.npy')
     y_train = np.load('data/y_processed_train.npy')
