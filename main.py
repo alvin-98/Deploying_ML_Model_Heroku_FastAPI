@@ -178,6 +178,7 @@ async def inference(person: Person):
     #                 person.hoursPerWeek,
     #                 person.nativeCountry]])
     data = pd.DataFrame(person.dict(), index=[0])
+    print(data)
     # data = pd.DataFrame(data=input_data, 
     #                     columns=["age",
     #                     "workclass",
