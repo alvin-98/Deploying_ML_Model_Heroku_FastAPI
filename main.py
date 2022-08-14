@@ -127,6 +127,7 @@ class Person(BaseModel):
                         "Hong",
                         "Holand-Netherlands"]  = Field(None, alias='native-country')
     class Config:
+        allow_population_by_field_name = True
         schema_extra = {
             "example": {
                 "age": 30,
@@ -163,37 +164,37 @@ async def inference(person: Person):
     filename = "model/lb.sav"
     lb = joblib.load(filename)
 
-    # input_data = np.array([[person.age,
-    #                 person.workclass,
-    #                 person.fnlwgt,
-    #                 person.education,
-    #                 person.educationNum,
-    #                 person.maritalStatus,
-    #                 person.occupation,
-    #                 person.relationship,
-    #                 person.race,
-    #                 person.sex,
-    #                 person.capitalGain,
-    #                 person.capitalLoss,
-    #                 person.hoursPerWeek,
-    #                 person.nativeCountry]])
-    data = pd.DataFrame(person.dict(), index=[0])
-    print(data)
-    # data = pd.DataFrame(data=input_data, 
-    #                     columns=["age",
-    #                     "workclass",
-    #                     "fnlwgt",
-    #                     "education",
-    #                     "education-num",
-    #                     "marital-status",
-    #                     "occupation",
-    #                     "relationship",
-    #                     "race",
-    #                     "sex",
-    #                     "capital-gain",
-    #                     "capital-loss",
-    #                     "hours-per-week",
-    #                     "native-country"])
+    input_data = np.array([[person.age,
+                    person.workclass,
+                    person.fnlwgt,
+                    person.education,
+                    person.educationNum,
+                    person.maritalStatus,
+                    person.occupation,
+                    person.relationship,
+                    person.race,
+                    person.sex,
+                    person.capitalGain,
+                    person.capitalLoss,
+                    person.hoursPerWeek,
+                    person.nativeCountry]])
+    
+    data = pd.DataFrame(data=input_data, 
+                        columns=["age",
+                        "workclass",
+                        "fnlwgt",
+                        "education",
+                        "education-num",
+                        "marital-status",
+                        "occupation",
+                        "relationship",
+                        "race",
+                        "sex",
+                        "capital-gain",
+                        "capital-loss",
+                        "hours-per-week",
+                        "native-country"])
+                        
     X, y, _, _ = process_data(
                         data, 
                         categorical_features=[
